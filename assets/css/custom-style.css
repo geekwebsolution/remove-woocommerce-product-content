@@ -1,0 +1,106 @@
+.rwpc_inner .rwpc_form table.rwpc.form-table td {
+    font-size: 13px;
+    vertical-align: middle;
+    margin: 0;
+}
+
+.rwpc_inner .rwpc_form .form-table th {
+    padding: 10px 5px 10px 0;
+    font-weight: normal;
+    width: 100%;
+}
+
+th.rwpc_title_style {
+    font-weight: bold !important;
+    font-size: 15px;
+}
+
+.rwpc_form .form-table thead {
+    border-bottom: 1px solid #ddd;
+    cursor: move;
+}
+
+.rwpc_inner.rwpc-row {
+    width: 100%;
+    display: flex;
+}
+
+.rwpc-row .rwpc-col-5,
+.rwpc-row .rwpc-col-7 {
+    display: flex;
+    background-color: #fff;
+    margin: 0 10px;
+    padding: 20px;
+}
+
+.rwpc-row .rwpc-col-5 {
+    width: 41%;
+    margin-left: 0;
+}
+
+.rwpc-row .rwpc-col-7 {
+    width: 57%;
+    margin-right: 0;
+}
+
+.notice-success.rwpc-success-msg {
+    border-left-color: #46b450;
+}
+
+.notice-error.rwpc-error-msg {
+    border-left-color: red!important;
+}
+
+.rwpc-pro-features-list li {
+    margin: 0 0 22px 0;
+    position: relative;
+    padding: 0 0 0 34px;
+    font-size: 15px;
+}
+
+.rwpc-pro-features-list li a {
+    font-weight: 500;
+}
+
+.rwpc-pro-features-list li:before {
+    content: "✓";
+    position: absolute;
+    color: #30cb30;
+    font-weight: bold;
+    top: 0;
+    left: 0;
+}
+
+.rwpc-pro-features-box .rwpc-buy-now-btn {
+    height: 40px;
+    width: 170px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #30cb30;
+    border-radius: 5px;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.4s;
+}
+
+.rwpc-pro-features-box .rwpc-buy-now-btn:hover {
+    background-color: #30bc30;
+}
+
+.rwpc-col-5 .rwpc_form {
+    width: 100%;
+}
+
+.rwpc_form .form-table.rwpc_table tr td {
+    padding: 0;
+}
+
+.rwpc_inner .rwpc_form .form-table tbody tr {
+    display: flex;
+    align-items: center;
+}
+
+.rwpc_inner .rwpc_form table.rwpc.form-table td input {
+    margin: 0;
+}
