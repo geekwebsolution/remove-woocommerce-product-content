@@ -1,26 +1,15 @@
 <?php
-
 /*
-
 Plugin Name: Remove Woocommerce Product Content
-
 Description: Hide product content from  wooocommerce Single product page, Shop page and category page
-
 Author: Geek Code Lab
-
-Version: 1.9
-
-WC tested up to: 7.7.0
-
+Version: 2.0
+WC tested up to: 8.2.0
 Author URI: https://geekcodelab.com/
-
-
 */
-
-
 if(!defined('ABSPATH')) exit;
 
-define("RWPC_BUILD","1.9");
+define("RWPC_BUILD","2.0");
 
 if(!defined("RWPC_PLUGIN_DIR_PATH"))
 	
@@ -69,7 +58,6 @@ function rwpc_plugin_active_single_product_page(){
    	}
 }
 
-
 function rwpc_registerSettings() {
 		$plugin_data = get_plugin_data( __FILE__ );
 		$plugin_name = $plugin_data['Name'];
@@ -94,54 +82,42 @@ function rwpc_option_menu()
 	{
 		wp_die(__('You donot have sufficient permission to access this page.'));
 	}
-	include( RWPC_PLUGIN_DIR_PATH . 'options.php');
-	
+	include( RWPC_PLUGIN_DIR_PATH . 'options.php');	
 }
 
 function rwpc_enqueue_styles(){
 	//STYLES
-		wp_enqueue_style("custom-style.css",RWPC_PLUGIN_URL."/assets/css/custom-style.css",array(),RWPC_BUILD); 
-
+		wp_enqueue_style("custom-style.css",RWPC_PLUGIN_URL."/assets/css/custom-style.css",array(),RWPC_BUILD);
 		//SCRIPTS
 		wp_enqueue_script('jquery');
 		
 		wp_enqueue_script("rwpc-script",RWPC_PLUGIN_URL."/assets/js/rwpc_script.js",array(),RWPC_BUILD); 
-		
-	
 }
 
 add_action('init', 'rwpc_customizing_single_product_hooks', 2  );
 
-function rwpc_customizing_single_product_hooks(){
-	
+function rwpc_customizing_single_product_hooks() {	
+	if(is_admin())	return;
+
 	$rwpc_get_wc_single_opt=get_option('rwpc_hide_single_wcpage_hook');
 	$rwpc_wc_hooks=json_decode($rwpc_get_wc_single_opt);
 
 	$rwpc_get_wc_product_opt=get_option('rwpc_hide_product_wcpage_hook');
 	$rwpc_wc_product_hooks=json_decode($rwpc_get_wc_product_opt);
 
-
-	if(!empty($rwpc_wc_hooks)){
-
-		
+	if(!empty($rwpc_wc_hooks)){		
 		foreach($rwpc_wc_hooks as $rwpc_wc_key => $rwpc_wc_hook)
-		{
-		
-			if($rwpc_wc_hook  == "woocommerce_show_product_sale_flash"){
-				
+		{		
+			if($rwpc_wc_hook  == "woocommerce_show_product_sale_flash"){				
 				remove_action( 'woocommerce_before_single_product_summary', $rwpc_wc_hook , 10);
 			}
-			if($rwpc_wc_hook  == "woocommerce_template_single_price"){
-				
-				remove_action( 'woocommerce_single_product_summary', $rwpc_wc_hook , 10);
-				
+			if($rwpc_wc_hook  == "woocommerce_template_single_price"){				
+				remove_action( 'woocommerce_single_product_summary', $rwpc_wc_hook , 10);				
 			}
-			if($rwpc_wc_hook  == "woocommerce_template_single_excerpt"){
-			
+			if($rwpc_wc_hook  == "woocommerce_template_single_excerpt"){			
 				remove_action( 'woocommerce_single_product_summary', $rwpc_wc_hook , 20);
 			}
-			if($rwpc_wc_hook  == "woocommerce_template_single_meta"){
-				
+			if($rwpc_wc_hook  == "woocommerce_template_single_meta"){				
 				remove_action( 'woocommerce_single_product_summary',$rwpc_wc_hook , 40);
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_add_to_cart"){
@@ -153,8 +129,7 @@ function rwpc_customizing_single_product_hooks(){
 			if($rwpc_wc_hook  == "woocommerce_output_related_products"){
 				remove_action( 'woocommerce_after_single_product_summary',$rwpc_wc_hook , 20);
 				if ( ! function_exists( 'rwpc_hide_related_product_style' ) ) {
-					function rwpc_hide_related_product_style() {
-						?>
+					function rwpc_hide_related_product_style(){ ?>
 						<style>
 							.related.products {
 								display: none !important;
@@ -165,8 +140,7 @@ function rwpc_customizing_single_product_hooks(){
 				}
 				add_action( 'wp_head', 'rwpc_hide_related_product_style' );
 			}
-			if($rwpc_wc_hook  == "rwpc_woocommerce_product_description_tab"){
-				
+			if($rwpc_wc_hook  == "rwpc_woocommerce_product_description_tab"){				
 				function rwpc_woocommerce_product_description_tabs( $tabs ) {
 					unset( $tabs['description'] );
 					return $tabs;
@@ -174,7 +148,6 @@ function rwpc_customizing_single_product_hooks(){
 				add_filter( 'woocommerce_product_tabs', 'rwpc_woocommerce_product_description_tabs', 98 );
 			}
 			if($rwpc_wc_hook  == "rwpc_woocommerce_product_review_tab"){
-
 				function rwpc_woocommerce_product_review_tabs( $tabs ) {
 					unset( $tabs['reviews'] );
 					return $tabs;
@@ -182,74 +155,55 @@ function rwpc_customizing_single_product_hooks(){
 				add_filter( 'woocommerce_product_tabs', 'rwpc_woocommerce_product_review_tabs', 98 );
 			}
 			
-			if($rwpc_wc_hook  == "rwpc_woocommerce_product_additional_information_tab"){
-				
+			if($rwpc_wc_hook  == "rwpc_woocommerce_product_additional_information_tab"){				
 				add_filter( 'woocommerce_product_tabs', 'rwpc_woocommerce_product_additional_info_tabs', 98 );
 				function rwpc_woocommerce_product_additional_info_tabs( $tabs ) {
 					unset( $tabs['additional_information'] );
 					return $tabs;
-				}
-				
+				}				
 			}
-			if($rwpc_wc_hook  == "rwpc_woocommerce_product_all_tab"){
-				
-				remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs',10);
-			
-			}
-			
+			if($rwpc_wc_hook  == "rwpc_woocommerce_product_all_tab"){				
+				remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs',10);			
+			}			
 		}
 	}
 	
-	if(!empty($rwpc_wc_product_hooks)){
-
-		
+	if(!empty($rwpc_wc_product_hooks)) {		
 		foreach($rwpc_wc_product_hooks as $rwpc_key => $rwpc_hook)
 		{
-			if($rwpc_hook  == "woocommerce_show_product_loop_sale_flash"){
-						
-				remove_action( 'woocommerce_before_shop_loop_item_title', $rwpc_hook ,10);
-			
+			if($rwpc_hook  == "woocommerce_show_product_loop_sale_flash"){						
+				remove_action( 'woocommerce_before_shop_loop_item_title', $rwpc_hook ,10);			
 			}
-			if($rwpc_hook  == "woocommerce_template_loop_add_to_cart"){
-				
-				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);
-			
+			if($rwpc_hook  == "woocommerce_template_loop_add_to_cart"){				
+				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);			
 			}
-			if($rwpc_hook  == "rwpc_woocommerce_price"){
-			
+			if($rwpc_hook  == "rwpc_woocommerce_price"){			
 				// remove price price
-				add_filter( 'woocommerce_get_price_html', 'rwpc_remove_prices', 10, 2 );
-				 
+				add_filter( 'woocommerce_get_price_html', 'rwpc_remove_prices', 10, 2 );				 
 				function rwpc_remove_prices( $price, $product ) {
 					if(is_shop() || is_product_category())
 					{
 						$price = '';
 					}
-					return $price;
-				
+					return $price;				
 				}
 			}
-			if($rwpc_hook  == "rwpc_woocommerce_sale_price"){
-				
+			if($rwpc_hook  == "rwpc_woocommerce_sale_price"){				
 				// remove sale price
 				add_filter( 'woocommerce_get_price_html', 'rwpc_change_sale_price', 10, 2 );
 				function rwpc_change_sale_price( $price_html, $product ) {
-                            global $product;
-							if(is_shop() || is_product_category())
-							{
-                            	if( $product->is_on_sale() ) {
-									$price_html = '';
-									return $price_html;
-								}
-							}
-                            return $price_html;
-                          
-                        }
-                       
-				
+					global $product;
+					if(is_shop() || is_product_category())
+					{
+						if( $product->is_on_sale() ) {
+							$price_html = '';
+							return $price_html;
+						}
+					}
+					return $price_html;
+				}
 			} 
-			if($rwpc_hook  == "rwpc_woocommerce_variable_price"){
-				
+			if($rwpc_hook  == "rwpc_woocommerce_variable_price"){				
 				// remove variable price
 				add_filter( 'woocommerce_variable_price_html', 'rwpc_remove_variable_prices', 10, 2 );
 				function rwpc_remove_variable_prices( $price, $product ) {
