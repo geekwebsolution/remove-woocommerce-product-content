@@ -3,13 +3,13 @@
 Plugin Name: Remove Woocommerce Product Content
 Description: Hide product content from  wooocommerce Single product page, Shop page and category page
 Author: Geek Code Lab
-Version: 2.0
-WC tested up to: 8.2.0
+Version: 2.1
+WC tested up to: 8.2.2
 Author URI: https://geekcodelab.com/
 */
 if(!defined('ABSPATH')) exit;
 
-define("RWPC_BUILD","2.0");
+define("RWPC_BUILD","2.1");
 
 if(!defined("RWPC_PLUGIN_DIR_PATH"))
 	
@@ -214,4 +214,13 @@ function rwpc_customizing_single_product_hooks() {
 		}
 	}
 }
-?>
+
+/**
+ * Added HPOS support for woocommerce
+ */
+add_action( 'before_woocommerce_init', 'rwpc_before_woocommerce_init' );
+function rwpc_before_woocommerce_init() {
+    if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+}
