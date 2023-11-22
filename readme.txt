@@ -5,7 +5,7 @@ Tags: woocommerce customize, Hide content from single product page, Remove Price
 Requires PHP: 5.2.4
 Requires at least: 3.0.1
 Tested up to: 6.4.1
-WC tested up to: 8.2.2
+WC tested up to: 8.3.0
 Stable tag: 2.1
 By using this smart plugin, allows you to Hide product content from  wooocommerce Single product page, Shop page and category page , no need to edit theme and woocommerce plugin!
 

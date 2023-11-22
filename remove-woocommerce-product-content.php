@@ -4,7 +4,7 @@ Plugin Name: Remove Woocommerce Product Content
 Description: Hide product content from  wooocommerce Single product page, Shop page and category page
 Author: Geek Code Lab
 Version: 2.1
-WC tested up to: 8.2.2
+WC tested up to: 8.3.0
 Author URI: https://geekcodelab.com/
 */
 if(!defined('ABSPATH')) exit;
@@ -47,16 +47,34 @@ add_filter( "plugin_action_links_$plugin", 'rwpc_plugin_add_settings_link');
 register_activation_hook( __FILE__, 'rwpc_plugin_active_single_product_page' );
 
 function rwpc_plugin_active_single_product_page(){
-	
-	$error='required <b>woocommerce</b> plugin.';	
-	if ( !class_exists( 'WooCommerce' ) ) {
-	   die('Plugin NOT activated: ' . $error);
-	}
-
 	if (is_plugin_active( 'remove-woocommerce-product-content-pro/remove-woocommerce-product-content-pro.php' ) ) {		
 		deactivate_plugins('remove-woocommerce-product-content-pro/remove-woocommerce-product-content-pro.php');
    	}
 }
+
+/** Trigger an admin notice if WooCommerce is not installed.*/
+if ( ! function_exists( 'rwpc_install_woocommerce_admin_notice' ) ) {
+	function rwpc_install_woocommerce_admin_notice() { ?>
+		<div class="error">
+			<p>
+				<?php
+				// translators: %s is the plugin name.
+				echo esc_html( sprintf( __( '%s is enabled but not effective. It requires WooCommerce in order to work.' ), 'Remove Woocommerce Product Content' ) );
+				?>
+			</p>
+		</div>
+		<?php
+	}
+}
+function rwpc_woocommerce_constructor() {
+    // Check WooCommerce installation
+	if ( ! function_exists( 'WC' ) ) {
+		add_action( 'admin_notices', 'rwpc_install_woocommerce_admin_notice' );
+		return;
+	}
+
+}
+add_action( 'plugins_loaded', 'rwpc_woocommerce_constructor' );
 
 function rwpc_registerSettings() {
 		$plugin_data = get_plugin_data( __FILE__ );
