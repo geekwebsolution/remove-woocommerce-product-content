@@ -14,17 +14,13 @@ function get_option_rwpc_wc_product()
 
 // Success message
 function  success_option_msg_rwpc($msg)
-{
-	
+{	
 	return ' <div class="notice notice-success rwpc-success-msg is-dismissible"><p>'. $msg . '</p></div>';		
-	
 }
 
 // Error message
 function  failure_option_msg_rwpc($msg)
 {
-
 	return '<div class="notice notice-error rwpc-error-msg is-dismissible"><p>' . $msg . '</p></div>';		
-	
 }
 ?>

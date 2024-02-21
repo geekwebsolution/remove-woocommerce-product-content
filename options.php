@@ -5,35 +5,28 @@ $rwpc_wc_single_page = "";
 $rwpc_wc_product_page = "";
 if(!defined('ABSPATH')) exit;
 	
-	if(isset($_POST['rwpc_submit'])){
-		
-		if(isset($_POST['rwpc_single_checkbox']) && !empty($_POST['rwpc_single_checkbox'])){
-
-			$rwpc_wc_single_page	=	sanitize_text_field(json_encode($_POST['rwpc_single_checkbox']));
-		}
-		if(isset($_POST['rwpc_productList_checkbox']) && !empty($_POST['rwpc_productList_checkbox']) ) {
-
-			$rwpc_wc_product_page	=	sanitize_text_field(json_encode($_POST['rwpc_productList_checkbox']));
-		}
+if(isset($_POST['rwpc_submit'])){
 	
-		$nonce=$_POST['rwpc_wpnonce'];
-		
-		if(wp_verify_nonce( $nonce, 'rwpc_nonce' )){
-			
-				
-			update_option('rwpc_hide_single_wcpage_hook', $rwpc_wc_single_page);
-			update_option('rwpc_hide_product_wcpage_hook', $rwpc_wc_product_page);
-			
-			$successmsg= success_option_msg_rwpc('Settings Saved!');
-			
-		}
-		else
-		{
-			$errormsg= failure_option_msg_rwpc('An error has occurred.');
-			
-		}
-
+	if(isset($_POST['rwpc_single_checkbox']) && !empty($_POST['rwpc_single_checkbox'])){
+		$rwpc_wc_single_page	=	sanitize_text_field(json_encode($_POST['rwpc_single_checkbox']));
 	}
+	if(isset($_POST['rwpc_productList_checkbox']) && !empty($_POST['rwpc_productList_checkbox']) ) {
+		$rwpc_wc_product_page	=	sanitize_text_field(json_encode($_POST['rwpc_productList_checkbox']));
+	}
+
+	$nonce=$_POST['rwpc_wpnonce'];
+	if(wp_verify_nonce( $nonce, 'rwpc_nonce' )){
+		update_option('rwpc_hide_single_wcpage_hook', $rwpc_wc_single_page);
+		update_option('rwpc_hide_product_wcpage_hook', $rwpc_wc_product_page);
+		
+		$successmsg= success_option_msg_rwpc('Settings Saved!');
+	}
+	else
+	{
+		$errormsg= failure_option_msg_rwpc('An error has occurred.');
+		
+	}
+}
 	
 $rwpc_hook_value=array(
 'Hide Flash Sale'=>'woocommerce_show_product_sale_flash',
@@ -67,16 +60,10 @@ $rwpc_wc_product_value=json_decode($rwpc_get_wc_product_opt);
 
 ?>
 <div class="rwpc_wrap">
-	<h1 class="rwpc-h1-title">Remove Woocommerce Product Content</h1>
+	<h1 class="rwpc-h1-title"><?php echo esc_html__('Remove Woocommerce Product Content','remove-woocommerce-product-content'); ?></h1>
 	<?php
-    if ( isset( $successmsg ) ) 
-	{
-		echo $successmsg; 
-    }
-    if ( isset( $errormsg ) ) 
-	{
-        echo $errormsg;
-    }
+    if ( isset( $successmsg ) ) { echo $successmsg;  }
+    if ( isset( $errormsg ) ) { echo $errormsg; }
     ?>
 	<div class='rwpc_inner rwpc-row'>
 		<div class="rwpc-col-5">
@@ -84,12 +71,12 @@ $rwpc_wc_product_value=json_decode($rwpc_get_wc_product_opt);
 			<form method="post" class="rwpc_form">
 				<table class="rwpc form-table rwpc_table">
 					<thead>
-						<th scope="row" class="rwpc_title_style">Single Product Page</th>
+						<th scope="row" class="rwpc_title_style"><?php echo esc_html__('Single Product Page','remove-woocommerce-product-content'); ?></th>
 					</thead>
 					<tbody>
 						
 						<tr valign="top">
-							<th scope="row"><label for="rwpc_single_page">Check All</label></th>
+							<th scope="row"><label for="rwpc_single_page"><?php echo esc_html__('Check All','remove-woocommerce-product-content'); ?></label></th>
 							<td><input name="rwpc_single_page" type="checkbox" id="rwpc_single_page" value=""></td>
 						</tr>
 					<?php foreach($rwpc_hook_value as $rwpc_title => $rwpc_hook ){  ?>
@@ -99,20 +86,20 @@ $rwpc_wc_product_value=json_decode($rwpc_get_wc_product_opt);
 						</tr>
 					<?php } ?>
 						<thead>
-								<th scope="row" class="rwpc_title_style">Product List Page</th>
+								<th scope="row" class="rwpc_title_style"><?php echo esc_html__('Product List Page','remove-woocommerce-product-content'); ?></th>
 						</thead>
 						<tr valign="top">
-							<th scope="row"><label for="rwpc_product_page">Check All</label></th>
+							<th scope="row"><label for="rwpc_product_page"><?php echo esc_html__('Check All','remove-woocommerce-product-content'); ?></label></th>
 							<td><input name="rwpc_product_page" type="checkbox" id="rwpc_product_page" value=""></td>
 						
 						</tr>
-				<?php	foreach($rwpc_shop_hook_value as $rwpc_Shop_title => $rwpc_shop_hook )
-						{  ?>
+					<?php foreach($rwpc_shop_hook_value as $rwpc_Shop_title => $rwpc_shop_hook )
+						{ ?>
 							<tr valign="top">
 								<th scope="row"><label for="rwpc_<?php echo $rwpc_shop_hook; ?>"><?php echo $rwpc_Shop_title; ?></label></th>
 								<td><input name="rwpc_productList_checkbox[]" type="checkbox" id="rwpc_<?php echo $rwpc_shop_hook; ?>" value="<?php echo $rwpc_shop_hook ?>" <?php if(!empty($rwpc_wc_product_value)){ if(in_array($rwpc_shop_hook,$rwpc_wc_product_value)){ echo "checked";}}?> ></td>
 							</tr>
-				<?php 	} ?>
+					<?php } ?>
 						<input type="hidden" name="rwpc_wpnonce" value="<?php echo $nonce= wp_create_nonce('rwpc_nonce'); ?>">
 						<tr valign="top">
 							<td><input class="button button-primary button-large" type="submit" name="rwpc_submit" value="Update"/></td>
@@ -123,18 +110,18 @@ $rwpc_wc_product_value=json_decode($rwpc_get_wc_product_opt);
 		</div>
 		<div class="rwpc-col-7">
 			<div class="rwpc-pro-features-box">
-				<h3 class="rwpc-h3-title">Remove Woocommerce Product Content Pro</h3>
+				<h3 class="rwpc-h3-title"><?php echo esc_html__('Remove Woocommerce Product Content Pro','remove-woocommerce-product-content'); ?></h3>
 				<ul class="rwpc-pro-features-list">
-					<li>Users can Hide product content individually.</li>
-					<li>Admin can easily remove different content of product like price, thumbnail, product tab, add to cart button etc by Category.</li>
-					<li>Admin can easily remove different content of product like price, thumbnail, product tab, add to cart button etc by individual product.</li>
-					<li>User can hide product content by single product, category.</li>
-					<li>Any content from above you can easily hide and show easily from admin side. </li>
-					<li>Timely <a href="https://geekcodelab.com/contact/" target="_blank">support</a> 24/7.</li>
-					<li>Regular updates.</li>
-					<li>Well documented.</li>
+					<li><?php echo esc_html__('Users can Hide product content individually.','remove-woocommerce-product-content'); ?></li>
+					<li><?php echo esc_html__('Admin can easily remove different content of product like price, thumbnail, product tab, add to cart button etc by Category.','remove-woocommerce-product-content'); ?></li>
+					<li><?php echo esc_html__('Admin can easily remove different content of product like price, thumbnail, product tab, add to cart button etc by individual product.','remove-woocommerce-product-content'); ?></li>
+					<li><?php echo esc_html__('User can hide product content by single product, category.','remove-woocommerce-product-content'); ?></li>
+					<li><?php echo esc_html__('Any content from above you can easily hide and show easily from admin side.','remove-woocommerce-product-content'); ?> </li>
+					<li><?php echo esc_html__('Timely','remove-woocommerce-product-content'); ?> <a href="https://geekcodelab.com/contact/" target="_blank">support</a> 24/7.</li>
+					<li><?php echo esc_html__('Regular updates.','remove-woocommerce-product-content'); ?></li>
+					<li><?php echo esc_html__('Well documented.','remove-woocommerce-product-content'); ?></li>
 				</ul>
-				<a href="https://geekcodelab.com/wordpress-plugins/remove-woocommerce-product-content-pro/" class="rwpc-buy-now-btn" target="_blank">Upgrade to Premium</a>
+				<a href="https://geekcodelab.com/wordpress-plugins/remove-woocommerce-product-content-pro/" class="rwpc-buy-now-btn" target="_blank"><?php echo esc_html__('Upgrade to Premium','remove-woocommerce-product-content'); ?></a>
 			</div>
 
 		</div>
