@@ -187,7 +187,7 @@ function rwpc_customizing_single_product_hooks() {
 		{
 			if($rwpc_hook  == "woocommerce_show_product_loop_sale_flash"){						
 				remove_action( 'woocommerce_before_shop_loop_item_title', $rwpc_hook ,10);			
-				remove_action( 'woocommerce_after_shop_loop_item_title', $rwpc_hook ,10);			
+				remove_action( 'woocommerce_after_shop_loop_item_title', $rwpc_hook ,6);			
 			}
 			if($rwpc_hook  == "woocommerce_template_loop_add_to_cart"){				
 				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);			
