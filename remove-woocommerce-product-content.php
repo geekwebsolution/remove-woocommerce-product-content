@@ -3,13 +3,14 @@
 Plugin Name: Remove Woocommerce Product Content
 Description: Hide product content from  wooocommerce Single product page, Shop page and category page
 Author: Geek Code Lab
-Version: 2.1
-WC tested up to: 8.3.0
+Version: 2.2
+WC tested up to: 8.6.1
 Author URI: https://geekcodelab.com/
+Text Domain: remove-woocommerce-product-content
 */
 if(!defined('ABSPATH')) exit;
 
-define("RWPC_BUILD","2.1");
+define("RWPC_BUILD","2.2");
 
 if(!defined("RWPC_PLUGIN_DIR_PATH"))
 	
@@ -17,7 +18,7 @@ if(!defined("RWPC_PLUGIN_DIR_PATH"))
 	
 if(!defined("RWPC_PLUGIN_URL"))
 	
-	define("RWPC_PLUGIN_URL",plugins_url().'/'.basename(dirname(__FILE__)));
+	define("RWPC_PLUGIN_URL", plugins_url().'/'.basename(dirname(__FILE__)));
 	
 require_once( RWPC_PLUGIN_DIR_PATH .'functions.php');
 
@@ -28,14 +29,13 @@ add_action('admin_enqueue_scripts','rwpc_enqueue_styles');
 add_action('admin_init', 'rwpc_registerSettings');
 
 function rwpc_plugin_add_settings_link( $links ) { 
-	$support_link = '<a href="https://geekcodelab.com/contact/"  target="_blank" >' . __( 'Support' ) . '</a>';
+	$support_link = '<a href="https://geekcodelab.com/contact/"  target="_blank" >' . __( 'Support', 'remove-woocommerce-product-content' ) . '</a>';
 	array_unshift( $links, $support_link );
 	
-	$pro_link = '<a href="https://geekcodelab.com/wordpress-plugins/remove-woocommerce-product-content-pro/"  target="_blank" style="color:#46b450;font-weight: 600;">' . __( 'Premium Upgrade' ) . '</a>'; 
+	$pro_link = '<a href="https://geekcodelab.com/wordpress-plugins/remove-woocommerce-product-content-pro/"  target="_blank" style="color:#46b450;font-weight: 600;">' . __( 'Premium Upgrade', 'remove-woocommerce-product-content' ) . '</a>'; 
 	array_unshift( $links, $pro_link );	
 
-
-	$settings_link = '<a href="'.admin_url('').'admin.php?page=rwpc-remove-woocommerce-product-content">' . __( 'Settings' ) . '</a>';
+	$settings_link = '<a href="'.admin_url('').'admin.php?page=rwpc-remove-woocommerce-product-content">' . __( 'Settings', 'remove-woocommerce-product-content' ) . '</a>';
 	array_unshift( $links, $settings_link );
 
 	return $links;	
@@ -43,10 +43,9 @@ function rwpc_plugin_add_settings_link( $links ) {
 $plugin = plugin_basename( __FILE__ );
 add_filter( "plugin_action_links_$plugin", 'rwpc_plugin_add_settings_link');
 
-//-------------------------------------
+// Register activation hook
 register_activation_hook( __FILE__, 'rwpc_plugin_active_single_product_page' );
-
-function rwpc_plugin_active_single_product_page(){
+function rwpc_plugin_active_single_product_page() {
 	if (is_plugin_active( 'remove-woocommerce-product-content-pro/remove-woocommerce-product-content-pro.php' ) ) {		
 		deactivate_plugins('remove-woocommerce-product-content-pro/remove-woocommerce-product-content-pro.php');
    	}
@@ -59,7 +58,7 @@ if ( ! function_exists( 'rwpc_install_woocommerce_admin_notice' ) ) {
 			<p>
 				<?php
 				// translators: %s is the plugin name.
-				echo esc_html( sprintf( __( '%s is enabled but not effective. It requires WooCommerce in order to work.' ), 'Remove Woocommerce Product Content' ) );
+				echo esc_html__( sprintf( '%s is enabled but not effective. It requires WooCommerce in order to work.', 'Remove Woocommerce Product Content' ), 'remove-woocommerce-product-content' );
 				?>
 			</p>
 		</div>
@@ -72,15 +71,14 @@ function rwpc_woocommerce_constructor() {
 		add_action( 'admin_notices', 'rwpc_install_woocommerce_admin_notice' );
 		return;
 	}
-
 }
 add_action( 'plugins_loaded', 'rwpc_woocommerce_constructor' );
 
 function rwpc_registerSettings() {
-		$plugin_data = get_plugin_data( __FILE__ );
-		$plugin_name = $plugin_data['Name'];
-		register_setting( $plugin_name, 'rwpc_hide_single_wcpage_hook');
-		register_setting( $plugin_name, 'rwpc_hide_product_wcpage_hook');
+	$plugin_data = get_plugin_data( __FILE__ );
+	$plugin_name = $plugin_data['Name'];
+	register_setting( $plugin_name, 'rwpc_hide_single_wcpage_hook');
+	register_setting( $plugin_name, 'rwpc_hide_product_wcpage_hook');
 }
 
 function rwpc_admin_option() {
@@ -96,20 +94,18 @@ function rwpc_admin_option() {
 
 function rwpc_option_menu()
 {
-	if(!current_user_can('manage_options'))
-	{
-		wp_die(__('You donot have sufficient permission to access this page.'));
-	}
 	include( RWPC_PLUGIN_DIR_PATH . 'options.php');	
 }
 
-function rwpc_enqueue_styles(){
-	//STYLES
-		wp_enqueue_style("custom-style.css",RWPC_PLUGIN_URL."/assets/css/custom-style.css",array(),RWPC_BUILD);
+function rwpc_enqueue_styles($hook) {
+	if($hook == 'woocommerce_page_rwpc-remove-woocommerce-product-content') {
+		//STYLES
+		wp_enqueue_style("rwpc-style.css",RWPC_PLUGIN_URL."/assets/css/rwpc-style.css",array(),RWPC_BUILD);
+
 		//SCRIPTS
-		wp_enqueue_script('jquery');
-		
-		wp_enqueue_script("rwpc-script",RWPC_PLUGIN_URL."/assets/js/rwpc_script.js",array(),RWPC_BUILD); 
+		wp_enqueue_script('jquery');	
+		wp_enqueue_script("rwpc-script",RWPC_PLUGIN_URL."/assets/js/rwpc_script.js",array(),RWPC_BUILD);
+	}
 }
 
 add_action('init', 'rwpc_customizing_single_product_hooks', 2  );
@@ -126,7 +122,7 @@ function rwpc_customizing_single_product_hooks() {
 	if(!empty($rwpc_wc_hooks)){		
 		foreach($rwpc_wc_hooks as $rwpc_wc_key => $rwpc_wc_hook)
 		{		
-			if($rwpc_wc_hook  == "woocommerce_show_product_sale_flash"){				
+			if($rwpc_wc_hook  == "woocommerce_show_product_sale_flash"){
 				remove_action( 'woocommerce_before_single_product_summary', $rwpc_wc_hook , 10);
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_price"){				
@@ -191,6 +187,7 @@ function rwpc_customizing_single_product_hooks() {
 		{
 			if($rwpc_hook  == "woocommerce_show_product_loop_sale_flash"){						
 				remove_action( 'woocommerce_before_shop_loop_item_title', $rwpc_hook ,10);			
+				remove_action( 'woocommerce_after_shop_loop_item_title', $rwpc_hook ,6);			
 			}
 			if($rwpc_hook  == "woocommerce_template_loop_add_to_cart"){				
 				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);			
@@ -203,7 +200,7 @@ function rwpc_customizing_single_product_hooks() {
 					{
 						$price = '';
 					}
-					return $price;				
+					return $price;
 				}
 			}
 			if($rwpc_hook  == "rwpc_woocommerce_sale_price"){				
