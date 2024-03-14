@@ -1,13 +1,13 @@
 === Remove Woocommerce Product Content  ===
 Contributors: rajkakadiya, rvadhel
 Donate link: https://paypal.me/rvadhel
-Tags: woocommerce customize, Hide content from single product page, Remove Price, Remove Add to cart, Remove Product tab, Remove thumbnail, remove Variable Price, Remove Sale price, remove related product
+Tags: Hide content from single product page, Remove Price, Remove Add to cart, Remove thumbnail, Remove Sale price
 Requires PHP: 7.4
 Requires at least: 6.3
 Tested up to: 6.4.2
 WC tested up to: 8.6.1
 Stable tag: 2.2
-By using this smart plugin, allows you to Hide product content from  wooocommerce Single product page, Shop page and category page , no need to edit theme and woocommerce plugin!
+By using this smart plugin, allows you to Hide product content from  wooocommerce Single product page, Shop page and category page
 
 == Description ==
 
@@ -103,4 +103,3 @@ After active plugin go to Woocommerce->Adding Content to the Footer.
  
 = 1.0 =
  Initial release
-
