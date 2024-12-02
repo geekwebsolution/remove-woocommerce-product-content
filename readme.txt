@@ -6,7 +6,7 @@ Requires PHP: 7.4
 Requires at least: 6.3
 Tested up to: 6.4.2
 WC tested up to: 8.6.1
-Stable tag: 2.2
+Stable tag: 2.3.0
 By using this smart plugin, allows you to Hide product content from  wooocommerce Single product page, Shop page and category page
 
 == Description ==

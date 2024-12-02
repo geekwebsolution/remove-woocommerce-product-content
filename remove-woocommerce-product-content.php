@@ -3,30 +3,39 @@
 Plugin Name: Remove Woocommerce Product Content
 Description: Hide product content from  wooocommerce Single product page, Shop page and category page
 Author: Geek Code Lab
-Version: 2.2
+Version: 2.3.0
 WC tested up to: 8.6.1
 Author URI: https://geekcodelab.com/
 Text Domain: remove-woocommerce-product-content
 */
 if(!defined('ABSPATH')) exit;
 
-define("RWPC_BUILD","2.2");
+define("RWPC_BUILD","2.3.0");
 
 if(!defined("RWPC_PLUGIN_DIR_PATH"))
-	
 	define("RWPC_PLUGIN_DIR_PATH",plugin_dir_path(__FILE__));
 	
 if(!defined("RWPC_PLUGIN_URL"))
-	
 	define("RWPC_PLUGIN_URL", plugins_url().'/'.basename(dirname(__FILE__)));
+
+if (!defined("RWPC_PLUGIN_BASENAME"))
+	define("RWPC_PLUGIN_BASENAME", plugin_basename(__FILE__));
+
+if (!defined("RWPC_PLUGIN_DIR"))
+	define("RWPC_PLUGIN_DIR", plugin_basename(__DIR__));
 	
+
 require_once( RWPC_PLUGIN_DIR_PATH .'functions.php');
+
+require(RWPC_PLUGIN_DIR_PATH . 'updater/updater.php');
 
 add_action('admin_menu', 'rwpc_admin_option' );
 
 add_action('admin_enqueue_scripts','rwpc_enqueue_styles');
 
 add_action('admin_init', 'rwpc_registerSettings');
+
+
 
 function rwpc_plugin_add_settings_link( $links ) { 
 	$support_link = '<a href="https://geekcodelab.com/contact/"  target="_blank" >' . __( 'Support', 'remove-woocommerce-product-content' ) . '</a>';
@@ -43,13 +52,16 @@ function rwpc_plugin_add_settings_link( $links ) {
 $plugin = plugin_basename( __FILE__ );
 add_filter( "plugin_action_links_$plugin", 'rwpc_plugin_add_settings_link');
 
+
 // Register activation hook
 register_activation_hook( __FILE__, 'rwpc_plugin_active_single_product_page' );
 function rwpc_plugin_active_single_product_page() {
+	rwpc_updater_activate();
 	if (is_plugin_active( 'remove-woocommerce-product-content-pro/remove-woocommerce-product-content-pro.php' ) ) {		
 		deactivate_plugins('remove-woocommerce-product-content-pro/remove-woocommerce-product-content-pro.php');
    	}
 }
+add_action('upgrader_process_complete', 'rwpc_updater_activate'); // remove  transient  on plugin  update
 
 /** Trigger an admin notice if WooCommerce is not installed.*/
 if ( ! function_exists( 'rwpc_install_woocommerce_admin_notice' ) ) {
