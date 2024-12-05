@@ -64,6 +64,14 @@ After active plugin go to Woocommerce->Adding Content to the Footer.
 1. Setting page.
 
 == Changelog ==
+
+= 2.3 =
+  Fix Bug
+  Added auto updated function
+
+= 2.2 =
+  Fixed bugs
+
 = 2.2 =
   Fixed bugs
 
