@@ -23,6 +23,7 @@ if (!defined("RWPC_PLUGIN_BASENAME"))
 
 if (!defined("RWPC_PLUGIN_DIR"))
 	define("RWPC_PLUGIN_DIR", plugin_basename(__DIR__));
+	
 
 require_once( RWPC_PLUGIN_DIR_PATH .'functions.php');
 
