@@ -138,16 +138,44 @@ function rwpc_customizing_single_product_hooks() {
 				remove_action( 'woocommerce_before_single_product_summary', $rwpc_wc_hook , 10);
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_price"){				
-				remove_action( 'woocommerce_single_product_summary', $rwpc_wc_hook , 10);				
+				remove_action( 'woocommerce_single_product_summary', $rwpc_wc_hook , 10);	
+                // Remove price rendering completely
+                add_filter('woocommerce_get_price_html', function($price) {
+                    if(is_product()) {
+                        return '';
+                    }
+                    return $price;
+                }, 100);		
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_excerpt"){			
 				remove_action( 'woocommerce_single_product_summary', $rwpc_wc_hook , 20);
+                // Prevent excerpt display completely
+                add_filter('woocommerce_short_description', '__return_empty_string', 100);
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_meta"){				
 				remove_action( 'woocommerce_single_product_summary',$rwpc_wc_hook , 40);
+				
+				add_filter('woocommerce_product_meta_end', function() {
+					$meta_content = ob_get_clean();
+					// Remove both SKU and category information
+					$meta_content = preg_replace('/<span class="sku_wrapper">.*?<\/span>/', '', $meta_content);
+					$meta_content = preg_replace('/<span class="posted_in">.*?<\/span>/', '', $meta_content);
+					echo $meta_content;
+				}, 999);
+				
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_add_to_cart"){
 				remove_action( 'woocommerce_single_product_summary',$rwpc_wc_hook , 30);
+				remove_action('woocommerce_variable_add_to_cart', 'woocommerce_variable_add_to_cart', 30);
+				remove_action('woocommerce_grouped_add_to_cart', 'woocommerce_grouped_add_to_cart', 30);
+				remove_action('woocommerce_external_add_to_cart', 'woocommerce_external_add_to_cart', 30);
+				  // Astra specific hook removal
+				add_filter('woocommerce_is_purchasable', function($purchasable, $product) {
+					if(is_product()) {
+						return false;
+					}
+					return $purchasable;
+				}, 100, 2);
 			}
 			if($rwpc_wc_hook  == "woocommerce_show_product_thumbnails"){
 				remove_action( 'woocommerce_product_thumbnails',$rwpc_wc_hook , 20);
@@ -202,7 +230,9 @@ function rwpc_customizing_single_product_hooks() {
 				remove_action( 'woocommerce_after_shop_loop_item_title', $rwpc_hook ,6);			
 			}
 			if($rwpc_hook  == "woocommerce_template_loop_add_to_cart"){				
-				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);			
+				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);
+                add_filter('woocommerce_loop_add_to_cart_link', '__return_empty_string', 100);
+			
 			}
 			if($rwpc_hook  == "rwpc_woocommerce_price"){			
 				// remove price price
