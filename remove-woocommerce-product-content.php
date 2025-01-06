@@ -274,7 +274,14 @@ function rwpc_customizing_single_product_hooks() {
 		{
 			if($rwpc_hook  == "woocommerce_show_product_loop_sale_flash"){						
 				remove_action( 'woocommerce_before_shop_loop_item_title', $rwpc_hook ,10);			
-				
+				if (function_exists('wp_is_block_theme') && wp_is_block_theme()) {
+					add_filter('woocommerce_product_is_on_sale', function($on_sale, $product) {
+						if(is_shop() || is_product_category()) {
+							return false;
+						}
+						return $on_sale;
+					}, 100, 2);
+				}
 			}
 			if($rwpc_hook  == "woocommerce_template_loop_add_to_cart"){				
 				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);
