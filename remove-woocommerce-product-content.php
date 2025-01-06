@@ -136,6 +136,12 @@ function rwpc_customizing_single_product_hooks() {
 		{		
 			if($rwpc_wc_hook  == "woocommerce_show_product_sale_flash"){
 				remove_action( 'woocommerce_before_single_product_summary', $rwpc_wc_hook , 10);
+				
+				if (function_exists('wp_is_block_theme') && wp_is_block_theme()) {
+					add_filter('woocommerce_sale_flash', function () {
+						return '';
+					}, 10, 3);
+				}
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_price"){				
 				remove_action( 'woocommerce_single_product_summary', $rwpc_wc_hook , 10);	
@@ -148,21 +154,43 @@ function rwpc_customizing_single_product_hooks() {
                 }, 100);		
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_excerpt"){			
+				
 				remove_action( 'woocommerce_single_product_summary', $rwpc_wc_hook , 20);
-                // Prevent excerpt display completely
+				// Prevent excerpt display completely Specifically For Astra Theme
                 add_filter('woocommerce_short_description', '__return_empty_string', 100);
+				
+				//For Block Type of Theme Remove Description
+				if (function_exists('wp_is_block_theme') && wp_is_block_theme()) {
+					add_filter('render_block', function ($block_content, $block) {
+						if (strpos($block_content, 'wp-block-post-excerpt') !== false) {
+							return ''; // Remove the block content
+						}
+						return $block_content; // Return the block content unchanged
+					}, 10, 2);
+				}
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_meta"){				
-				remove_action( 'woocommerce_single_product_summary',$rwpc_wc_hook , 40);
-				
+
+				//For Astra Theme Remove SKU and Category Information
 				add_filter('woocommerce_product_meta_end', function() {
 					$meta_content = ob_get_clean();
+
 					// Remove both SKU and category information
 					$meta_content = preg_replace('/<span class="sku_wrapper">.*?<\/span>/', '', $meta_content);
 					$meta_content = preg_replace('/<span class="posted_in">.*?<\/span>/', '', $meta_content);
 					echo $meta_content;
 				}, 999);
-				
+
+				//For Block Type of Theme Remove SKU and Category Information
+				if (function_exists('wp_is_block_theme') && wp_is_block_theme()) {
+					add_filter('render_block', function ($block_content, $block) {
+						if ($block['blockName'] === 'woocommerce/product-meta') {
+							return ''; // Remove the block content
+						}
+						return $block_content;
+					}, 10, 2);
+				}
+				remove_action('woocommerce_single_product_summary', $rwpc_wc_hook, 40);
 			}
 			if($rwpc_wc_hook  == "woocommerce_template_single_add_to_cart"){
 				remove_action( 'woocommerce_single_product_summary',$rwpc_wc_hook , 30);
@@ -193,6 +221,14 @@ function rwpc_customizing_single_product_hooks() {
 					}
 				}
 				add_action( 'wp_head', 'rwpc_hide_related_product_style' );
+				if (function_exists('wp_is_block_theme') && wp_is_block_theme()) {
+					add_filter('render_block', function ($block_content, $block) {
+						if ($block['blockName'] === 'woocommerce/related-products') {
+							return ''; // Remove the block content
+						}
+						return $block_content;
+					}, 10, 2);
+				}
 			}
 			if($rwpc_wc_hook  == "rwpc_woocommerce_product_description_tab"){				
 				function rwpc_woocommerce_product_description_tabs( $tabs ) {
@@ -200,6 +236,7 @@ function rwpc_customizing_single_product_hooks() {
 					return $tabs;
 				}
 				add_filter( 'woocommerce_product_tabs', 'rwpc_woocommerce_product_description_tabs', 98 );
+
 			}
 			if($rwpc_wc_hook  == "rwpc_woocommerce_product_review_tab"){
 				function rwpc_woocommerce_product_review_tabs( $tabs ) {
@@ -217,7 +254,17 @@ function rwpc_customizing_single_product_hooks() {
 				}				
 			}
 			if($rwpc_wc_hook  == "rwpc_woocommerce_product_all_tab"){				
-				remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs',10);			
+				remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs',10);	
+					//Remove All of Product Tab For Block Theme
+				if (function_exists('wp_is_block_theme') && wp_is_block_theme()) {
+					add_filter('render_block', function ($block_content, $block) {
+						if ($block['blockName'] === 'woocommerce/product-details') {
+							return ''; // Remove the block content
+						}
+						return $block_content;
+					}, 10, 2);
+				}
+				
 			}			
 		}
 	}
@@ -227,7 +274,7 @@ function rwpc_customizing_single_product_hooks() {
 		{
 			if($rwpc_hook  == "woocommerce_show_product_loop_sale_flash"){						
 				remove_action( 'woocommerce_before_shop_loop_item_title', $rwpc_hook ,10);			
-				remove_action( 'woocommerce_after_shop_loop_item_title', $rwpc_hook ,6);			
+				
 			}
 			if($rwpc_hook  == "woocommerce_template_loop_add_to_cart"){				
 				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);

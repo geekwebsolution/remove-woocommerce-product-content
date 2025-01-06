@@ -31,15 +31,15 @@ if(isset($_POST['rwpc_submit'])){
 $rwpc_hook_value=array(
 'Hide Flash Sale'=>'woocommerce_show_product_sale_flash',
 'Hide Product Price'=>'woocommerce_template_single_price',
-'Hide Short Desciption'=>'woocommerce_template_single_excerpt',
+'Hide Short Description'=>'woocommerce_template_single_excerpt',
 'Hide Categories and SKU'=>'woocommerce_template_single_meta',
 'Hide Add to Cart'=>'woocommerce_template_single_add_to_cart',
 'Hide Thumbnail Product'=>'woocommerce_show_product_thumbnails',
 'Hide Related Product'=>'woocommerce_output_related_products',
+'Hide All Product Tabs'=>'rwpc_woocommerce_product_all_tab',
 'Hide Description Tab'=>'rwpc_woocommerce_product_description_tab',
 'Hide Review Tab'=>'rwpc_woocommerce_product_review_tab',
 'Hide Additional Information'=>'rwpc_woocommerce_product_additional_information_tab',
-'Hide All Product Tabs'=>'rwpc_woocommerce_product_all_tab',
 );
 
 $rwpc_shop_hook_value=array(
