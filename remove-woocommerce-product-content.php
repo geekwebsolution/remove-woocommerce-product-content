@@ -169,18 +169,19 @@ function rwpc_customizing_single_product_hooks() {
 					}, 10, 2);
 				}
 			}
-			if($rwpc_wc_hook  == "woocommerce_template_single_meta"){				
+			if($rwpc_wc_hook  == "woocommerce_template_single_meta"){	
+				//For Astra theme			
+				function custom_hide_product_meta_content()
+				{
+					ob_start(); // Start output buffering
+				}
+				add_action('woocommerce_product_meta_start', 'custom_hide_product_meta_content', 1);
 
-				//For Astra Theme Remove SKU and Category Information
-				add_filter('woocommerce_product_meta_end', function() {
-					$meta_content = ob_get_clean();
-
-					// Remove both SKU and category information
-					$meta_content = preg_replace('/<span class="sku_wrapper">.*?<\/span>/', '', $meta_content);
-					$meta_content = preg_replace('/<span class="posted_in">.*?<\/span>/', '', $meta_content);
-					echo $meta_content;
-				}, 999);
-
+				function custom_clear_product_meta_content()
+				{
+					ob_end_clean(); // Clear the buffered content
+				}
+				add_action('woocommerce_product_meta_end', 'custom_clear_product_meta_content', 99);
 				//For Block Type of Theme Remove SKU and Category Information
 				if (function_exists('wp_is_block_theme') && wp_is_block_theme()) {
 					add_filter('render_block', function ($block_content, $block) {
@@ -281,7 +282,14 @@ function rwpc_customizing_single_product_hooks() {
 						}
 						return $on_sale;
 					}, 100, 2);
-				}
+				}                
+                // For Astra Theme
+                add_filter('astra_attr_woo-sale-badge-container', function($attr) {
+                    if(is_shop() || is_product_category()) {
+                        return array(); //For Shop/Category Pages
+                    }
+                    return $attr; //For Others Pages
+                }, 99);
 			}
 			if($rwpc_hook  == "woocommerce_template_loop_add_to_cart"){				
 				remove_action( 'woocommerce_after_shop_loop_item', $rwpc_hook , 10);
